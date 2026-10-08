@@ -88,8 +88,8 @@ export class GithubOidcStack extends Stack {
         },
         StringLike: {
           'token.actions.githubusercontent.com:sub': [
-            'repo:gerardobalmaceda/node-red-api-gateway:ref:refs/heads/main',
-            'repo:gerardobalmaceda/node-red-auth:ref:refs/heads/main',
+            'repo:gygtechdevs/apigateway-node-red:ref:refs/heads/main',
+            'repo:gygtechdevs/node-red-auth:ref:refs/heads/main',
           ],
         },
       }),
@@ -122,7 +122,7 @@ export class GithubOidcStack extends Stack {
 
     new CfnOutput(this, 'ImageBuilderRoleArn', {
       value: builderRole.roleArn,
-      description: 'Rol para push de imágenes desde los repos de servicios (node-red-api-gateway / node-red-auth)',
+      description: 'Rol para push de imágenes desde los repos de servicios (apigateway-node-red / node-red-auth)',
     });
   }
 }
