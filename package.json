@@ -1,0 +1,24 @@
+{
+  "name": "infra-node-red",
+  "version": "0.1.0",
+  "description": "CDK infrastructure for node-red platform (ECS Fargate, ALB, Redis, S3, ECR, Secrets Manager)",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "synth": "cdk synth",
+    "diff": "cdk diff",
+    "deploy": "cdk deploy --all --require-approval never",
+    "destroy": "cdk destroy --all"
+  },
+  "devDependencies": {
+    "@types/node": "22.x",
+    "aws-cdk": "2.170.0",
+    "tsx": "^4.21.0",
+    "typescript": "~5.7.0"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.170.0",
+    "constructs": "^10.0.0"
+  }
+}
