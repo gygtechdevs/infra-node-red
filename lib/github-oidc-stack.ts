@@ -89,7 +89,9 @@ export class GithubOidcStack extends Stack {
         StringLike: {
           'token.actions.githubusercontent.com:sub': [
             'repo:gygtechdevs/apigateway-node-red:ref:refs/heads/main',
+            'repo:gygtechdevs@*/apigateway-node-red@*:ref:refs/heads/main',
             'repo:gygtechdevs/node-red-auth:ref:refs/heads/main',
+            'repo:gygtechdevs@*/node-red-auth@*:ref:refs/heads/main',
           ],
         },
       }),
