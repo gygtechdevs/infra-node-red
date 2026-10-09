@@ -16,7 +16,9 @@ export class EcrStack extends Stack {
     for (const service of getEnabledServices()) {
       const repo = new ecr.Repository(this, `Repo-${service.id}`, {
         repositoryName: service.ecrRepoName,
-        removalPolicy: RemovalPolicy.RETAIN,
+        // Destroy + empty so the stack can be torn down and recreated; CI rebuilds images.
+        removalPolicy: RemovalPolicy.DESTROY,
+        emptyOnDelete: true,
         imageScanOnPush: true,
         lifecycleRules: [
           {

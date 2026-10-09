@@ -3,6 +3,8 @@ name: Deploy infrastructure
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '**.md'
   workflow_dispatch:
   repository_dispatch:
     types: [image-pushed]
@@ -17,11 +19,14 @@ concurrency:
 
 env:
   AWS_REGION: us-east-1
+  CLUSTER_NAME: node-red
+  SERVICES: api-gateway auth-service
 
 jobs:
   deploy:
     name: cdk deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
@@ -39,19 +44,33 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - run: npx cdk synth --quiet
+      - name: cdk synth
+        run: npx cdk synth --quiet
+
+      - name: cdk diff
+        run: npx cdk diff --all || true
 
       - name: cdk deploy
-        run: npx cdk deploy --all --require-approval never
+        run: npx cdk deploy --all --require-approval never --concurrency 2 --outputs-file cdk-outputs.json
 
       - name: Force new deployment
         run: |
-          for svc in api-gateway auth-service; do
-            aws ecs update-service --cluster nodered-platform --service "$svc" \
+          for svc in $SERVICES; do
+            aws ecs update-service --cluster "$CLUSTER_NAME" --service "$svc" \
               --force-new-deployment --region "$AWS_REGION" > /dev/null
           done
 
       - name: Wait for stable
         run: |
-          aws ecs wait services-stable --cluster nodered-platform \
-            --services api-gateway auth-service --region "$AWS_REGION"
+          aws ecs wait services-stable --cluster "$CLUSTER_NAME" \
+            --services $SERVICES --region "$AWS_REGION"
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Stack outputs"
+            echo '```json'
+            cat cdk-outputs.json 2>/dev/null || echo '{}'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
