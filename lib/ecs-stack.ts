@@ -14,7 +14,6 @@ interface EcsStackProps extends StackProps {
   serviceSecurityGroups: Record<string, ec2.SecurityGroup>;
   repositories: Record<string, ecr.IRepository>;
   secrets: Record<string, import('aws-cdk-lib/aws-secretsmanager').ISecret>;
-  redisEndpoint: string;
   flowsBucket: s3.Bucket;
   corsOrigin: string;
 }

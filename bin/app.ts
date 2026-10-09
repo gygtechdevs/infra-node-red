@@ -26,7 +26,6 @@ const networkStack = new NetworkStack(app, 'NodeRedNetwork', { env });
 const dataStack = new DataStack(app, 'NodeRedData', {
   env,
   vpc: networkStack.vpc,
-  redisSecurityGroup: networkStack.sgRedis,
 });
 
 const ecrStack = new EcrStack(app, 'NodeRedEcr', { env });
@@ -39,7 +38,6 @@ const ecsStack = new EcsStack(app, 'NodeRedEcs', {
   serviceSecurityGroups: networkStack.serviceSecurityGroups,
   repositories: ecrStack.repositories,
   secrets: secretsStack.secrets,
-  redisEndpoint: dataStack.redisEndpoint,
   flowsBucket: dataStack.flowsBucket,
   corsOrigin,
 });

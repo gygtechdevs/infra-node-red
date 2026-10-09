@@ -6,7 +6,6 @@ import { getEnabledServices } from './config';
 export class NetworkStack extends Stack {
   readonly vpc: ec2.Vpc;
   readonly sgAlb: ec2.SecurityGroup;
-  readonly sgRedis: ec2.SecurityGroup;
   readonly serviceSecurityGroups: Record<string, ec2.SecurityGroup>;
 
   constructor(scope: Construct, id: string, props: StackProps) {
@@ -44,16 +43,5 @@ export class NetworkStack extends Stack {
       sg.addIngressRule(this.sgAlb, ec2.Port.tcp(service.port), `ALB to ${service.ecsServiceName}`);
       this.serviceSecurityGroups[service.id] = sg;
     }
-
-    this.sgRedis = new ec2.SecurityGroup(this, 'SgRedis', {
-      vpc: this.vpc,
-      description: 'ElastiCache Redis - gateway sessions',
-      allowAllOutbound: false,
-    });
-    this.sgRedis.addIngressRule(
-      this.serviceSecurityGroups['gateway'],
-      ec2.Port.tcp(6379),
-      'gateway to redis',
-    );
   }
 }
